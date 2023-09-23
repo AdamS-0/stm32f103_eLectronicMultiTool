@@ -6,7 +6,7 @@ void loop_piezo() {
   onEnterSubLoop();
   encoderChangeClear();
   uint16_t prevTone = 1, currTone = 1000; // Hz
-  bool playTone = false, toneChanged = false;
+  bool playTone = false, playToneChanged = false, toneChanged = false;
   display.setTextSize( 1 );
   display.setCursor( 28, 0 ); display.print( "Piezo tester" );
 
@@ -24,8 +24,8 @@ void loop_piezo() {
   }
   
   while( !exitCode ) {
-    if( b_btn_B ) {
-      b_btn_B = false;
+    if( playToneChanged ) {
+      playToneChanged = false;
       playTone = !playTone;
       toneChanged = true;
       display.setTextSize(1);
@@ -46,7 +46,7 @@ void loop_piezo() {
     encoderBlinkValue( 10, 23, currTone, 2, 10, 5 ); // x, y, val, textSize, base, places
     display.display();
     
-    conDelay( 200, exitCode || b_btn_B || enc1.wasTurned() );
+    conDelay( 200, exitCode || ( playToneChanged = btnB.wasPressed() ) || enc1.wasTurned() );
   }
   currTone = 0;
   noTone( PIN_PWM_OUT );

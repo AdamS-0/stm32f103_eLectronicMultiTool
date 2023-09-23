@@ -75,8 +75,7 @@ void loop_IR_Rx() {
     
   while( !exitCodeSub & !exitCode ) {
     
-    if( b_encBtn ) {
-      b_encBtn = false;
+    if( btnEnc.wasPressed() ) {
       addCode(&IrReceiver.decodedIRData);
       exitCodeSub = true; // go to second page
     }
@@ -140,8 +139,7 @@ void loop_IR_Tx() {
     else if( IRcodeSel >= NUM_IR_CODES ) IRcodeSel = NUM_IR_CODES - 1;
 
     //    if( digitalRead( PIN_BTN_A ) == LOW )         sendCode( IRcodeSel );
-    if( b_encBtn ) {
-      b_encBtn = false;
+    if( btnEnc.wasPressed() ) {
       sendCode( IRcodeSel );
     }
     

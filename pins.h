@@ -61,7 +61,7 @@ include:
 
 #define PIN_BTN_A PB3
 #define PIN_BTN_B PB4
-#define PIN_BTN_C PB5
+//#define PIN_BTN_C PB5
 
 #define PIN_DHT11 PA8
 

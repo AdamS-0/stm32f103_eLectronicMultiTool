@@ -15,24 +15,22 @@ void bootup() {
   display.display();
   display.print( "\nGPIO's... " ); display.display();
   
-  pinMode( PIN_LIGHT_SENS, INPUT );
-  pinMode( PIN_BTN_A, INPUT_PULLUP );
-  pinMode( PIN_BTN_B, INPUT_PULLUP );
-  pinMode( PIN_BTN_C, INPUT_PULLUP );
+  //pinMode( PIN_LIGHT_SENS, INPUT );
   
   pinMode( PIN_ENC_A, INPUT_PULLUP );
   pinMode( PIN_ENC_B, INPUT_PULLUP );
-  pinMode( PIN_ENC_BTN, INPUT_PULLUP );
   
   delay( 50 );
   display.print( "OK.\nInterrupts... " ); display.display();
 
   attachInterrupt( digitalPinToInterrupt( enc1.pinCLK ), INT_PIN_ENC_A, CHANGE );
   attachInterrupt( digitalPinToInterrupt( enc1.pinDT ), INT_PIN_ENC_B, CHANGE );
-  attachInterrupt( digitalPinToInterrupt( PIN_ENC_BTN ), int_encBtn, FALLING );
   
-  attachInterrupt( digitalPinToInterrupt( PIN_BTN_A ), int_btn_A, FALLING );
-  attachInterrupt( digitalPinToInterrupt( PIN_BTN_B ), int_btn_B, FALLING );
+  btns_bootup();
+//  attachInterrupt( digitalPinToInterrupt( PIN_ENC_BTN ), int_encBtn, FALLING );
+//  
+//  attachInterrupt( digitalPinToInterrupt( PIN_BTN_A ), int_btn_A, FALLING );
+//  attachInterrupt( digitalPinToInterrupt( PIN_BTN_B ), int_btn_B, FALLING );
   
   /*
   delay( 50 );
@@ -56,5 +54,10 @@ void bootup() {
   if( err == 0 ) display.print("OK.");
   else display.print("FAIL.");
   delay( 50 );
+
+  // initializing menus
+  mainMenu.names = strMenuPages;
+  mainMenu.Len = ArraySize( strMenuPages );
+  
   display.display();
 }

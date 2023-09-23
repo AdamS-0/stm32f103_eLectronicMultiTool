@@ -50,8 +50,7 @@ void encoderChangeValue(T &v, int baseSystem = 10, T maxValue = 0) {
   if( baseSystem == 0 ) return;
   
   // change from place to digit modification!
-  if( b_encBtn ) {
-    b_encBtn = false;
+  if( btnEnc.wasPressed() ) {
     b_encChangePlace = !b_encChangePlace;
   }
 
@@ -60,7 +59,7 @@ void encoderChangeValue(T &v, int baseSystem = 10, T maxValue = 0) {
   // should get all ones, e.g. 11111111 or maxValue
   maxValue = maxValue == 0 ? maxValue - 1 : maxValue;
 
-  int8_t dV = enc1.getDelta();
+  int8_t dV = -enc1.getDelta();
   
   if( b_encChangePlace ) {
     // change place (ends with return!)

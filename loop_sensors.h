@@ -160,8 +160,7 @@ void loop_sensors() {
       display.display();
     }
     
-    if( b_encBtn ) {
-      b_encBtn = false;
+    if( btnEnc.wasPressed() ) {
       menuSensors[selSensor]();
       requireUpdate = true;
     }

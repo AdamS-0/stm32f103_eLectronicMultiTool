@@ -1,14 +1,6 @@
 String projName = F("LMTool v0.1.1");
 void empty_loop();
 
-#define NUM_MENU_PAGES 9
-String strMenuPages[] = {
-  "Tester", "PWM generator", "Servo tester",
-  "Piezo tester", "Sensors", "IR Rx / Tx",
-  "I2C Scanner", "Continuity", "ATTiny programmer"
-};
-int8_t selMenu = 0;
-
 #include <IRremote.h>
 #include <Wire.h>
 #include <SoftWire.h>
@@ -22,6 +14,18 @@ TwoWire WIRE2 (2, I2C_FAST_MODE); // use IIC2
 #include <OLED_I2C_light.h>
 OLED  display( &Wire );
 extern uint8_t SmallFont[];
+
+
+// simple menus
+#include "simpleMenu.h"
+
+#define NUM_MENU_PAGES 9
+Menu mainMenu;
+String strMenuPages[] = {
+  "Tester", "PWM generator", "Servo tester",
+  "Piezo tester", "Sensors", "IR Rx / Tx",
+  "I2C Scanner", "Continuity", "ATTiny programmer"
+};
 
 
 #include <filter.h>
@@ -121,5 +125,5 @@ void setup() {
 void loop() {
   //  checkBattery();
   loop_mainScreen(); // temp, humidity and light info
-  menus[selMenu]();
+  menus[mainMenu.Id]();
 }

@@ -2,39 +2,49 @@
 // | Buttons section |
 // +-----------------+
 #define TIME_BTN_PRESS_DELAY 200UL // [ms]
-void int_btn_A(), int_btn_B(), int_btn_C();
-unsigned long ul_last_btn_A, ul_last_btn_B, ul_last_btn_C, ul_lastEncBtn;
-bool b_btn_A = false, b_btn_B = false, b_btn_C = false, b_encBtn = false;
 
+class Button {
+  private:
+    unsigned long ulLastTime;
+    bool bPressed = false;
+    bool defState = LOW;
+  public:
+    int pin;
+    
+    Button( int _pin, bool _defState = HIGH ) {
+      this->pin = _pin;
+      this->defState = _defState;
+      pinMode( this->pin, this->defState ? INPUT_PULLUP : INPUT_PULLDOWN );
+    }
 
-void int_btn_A() {
-  if( millis() - ul_last_btn_A < TIME_BTN_PRESS_DELAY ) return;
-  ul_last_btn_A = millis();
+    void interrupt() {
+      if( millis() - this->ulLastTime < TIME_BTN_PRESS_DELAY ) return;
+      this->ulLastTime = millis();
+      
+      this->bPressed = true;
+    }
+
+    // clears the state of the button
+    bool wasPressed() {
+      bool oldState = this->bPressed;
+      this->bPressed = false;
+      return oldState;
+    }
+
+    bool isPressed() {
+      return digitalRead( this->pin ) != this->defState;
+    }
+};
+
+Button btnA(PIN_BTN_A), btnB(PIN_BTN_B), btnEnc(PIN_ENC_BTN);
+
+void INT_PIN_BTN_A() { btnA.interrupt(); exitCode = true; }
+void INT_PIN_BTN_B() { btnB.interrupt(); exitCodeSub = true; }
+void INT_PIN_BTN_ENC() { btnEnc.interrupt(); }
+
+void btns_bootup() {
   
-  b_btn_A = true;
-  exitCode = true;
-}
-
-void int_btn_B() {
-  if( millis() - ul_last_btn_B < TIME_BTN_PRESS_DELAY ) return;
-  ul_last_btn_B = millis();
-  
-  b_btn_B = true;
-  exitCodeSub = true;
-}
-
-void int_btn_C() {
-  if( millis() - ul_last_btn_C < TIME_BTN_PRESS_DELAY ) return;
-  ul_last_btn_C = millis();
-  
-  b_btn_C = true;
-  modifyCode = true;
-}
-
-
-void int_encBtn() {
-  if( millis() - ul_lastEncBtn < TIME_BTN_PRESS_DELAY ) return;
-  ul_lastEncBtn = millis();
-  
-  b_encBtn = true;
+  attachInterrupt( digitalPinToInterrupt( btnEnc.pin ), INT_PIN_BTN_ENC, FALLING );
+  attachInterrupt( digitalPinToInterrupt( btnA.pin ), INT_PIN_BTN_A, FALLING );
+  attachInterrupt( digitalPinToInterrupt( btnB.pin ), INT_PIN_BTN_B, FALLING );
 }
