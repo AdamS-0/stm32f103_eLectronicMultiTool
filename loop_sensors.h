@@ -11,7 +11,9 @@ const uint8_t dhtTypes[] = {DHT11, DHT21, DHT22};
 //  VCC   DATA  NC    GND
 
 
-
+#define NUM_DHT_PAGES 3
+String strSensorsDHT[] = { "DHT11", "DHT21", "DHT22" };
+Menu menuSensorsDHT;
 
 void loop_DHT() {
   onEnterSubLoop();
@@ -22,10 +24,7 @@ void loop_DHT() {
   display.setTextSize( 1 );
   display.setCursor( 0, 0 ); display.print( "Sensors DHT" );
   display.setCursor(6, 12); display.print("Type:");
-  display.setCursor(6, 23); display.print("DHT11");
-  display.setCursor(6, 34); display.print("DHT21");
-  display.setCursor(6, 45); display.print("DHT22");
-
+  
   display.setTextSize(2);
   display.setCursor(115, 19); display.print("C");
   display.setCursor(115, 38); display.print("%");
@@ -36,12 +35,11 @@ void loop_DHT() {
   
   pinMode( PIN_1, OUTPUT ); pinMode( PIN_2, OUTPUT );
   pinMode( PIN_3, OUTPUT ); pinMode( PIN_PWM_OUT, OUTPUT );
-  digitalWrite( PIN_1, HIGH );
-  digitalWrite( PIN_2, HIGH );
-  digitalWrite( PIN_3, LOW );
-  digitalWrite( PIN_PWM_OUT, LOW );
+  digitalWrite( PIN_1, HIGH );  digitalWrite( PIN_2, HIGH );
+  digitalWrite( PIN_3, LOW );   digitalWrite( PIN_PWM_OUT, LOW );
   
   do {
+    /*
     if( enc1.wasTurned() ) {
       requireUpdate = true;
       selectedType += enc1.getDelta();
@@ -59,12 +57,27 @@ void loop_DHT() {
       display.setCursor( 62, 38 );  display.print( cstrCheck );
       display.display();
     }
+    */
+
+    if( enc1.wasTurned() || requireUpdate ) {
+      requireUpdate = false;
+      updateMenu( menuSensorsDHT, enc1.getDelta() );
+      display.fillRect( 0, 23, 45, 41, BLACK );
+        
+//drawMenu( Menu, _selector('>'), _x(0), _y(0), _dY(0), elemens2Show(5),
+//          state(SHOW_NUM_LINE | SHOW_NUM_LINE_SELECT)[
+//            HIDE_SELECTOR, SHOW_BIG_SELECT, SHOW_NUM_LINE, SHOW_NUM_LINE_SELECT
+//        ] )
+      drawMenu( menuSensorsDHT, '>', 6, 23, 2, 5, 0 );
+      display.display();
+    }
+    
 
     //
     DHT dht(PIN_2, dhtTypes[selectedType]);
     dht.begin();
     humid = 0; temp = 0; humidOld = 0; tempOld = 0;
-    
+    display.setTextSize(2);
     do {
       conDelay( 1000, exitCode || enc1.wasTurned() );
       humid = dht.readHumidity();     // [%]
@@ -84,7 +97,6 @@ void loop_DHT() {
         display.print( String(humid, 1) );
       }
       
-      
       display.display();
     } while( !( exitCode || enc1.wasTurned() ) ) ;
   } while( !exitCode ) ;
@@ -92,9 +104,6 @@ void loop_DHT() {
   exitCode = false;
   clearPins();
 }
-
-
-
 
 
 

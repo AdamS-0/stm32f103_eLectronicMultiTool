@@ -19,7 +19,7 @@ void loop_mainScreen() {
 //          state(SHOW_NUM_LINE | SHOW_NUM_LINE_SELECT)[
 //            HIDE_SELECTOR, SHOW_BIG_SELECT, SHOW_NUM_LINE, SHOW_NUM_LINE_SELECT
 //          ] )
-    drawMenu( mainMenu, 0, 4, 10, 2, 5, SHOW_NUM_LINE | SHOW_BIG_SELECT );
+    drawMenu( mainMenu, 0, 4, 10, 1, 5, SHOW_NUM_LINE | SHOW_BIG_SELECT );
     display.display();
     conDelay( 1000, ( exitNow = btnEnc.wasPressed() ) || enc1.wasTurned() );
   }

@@ -61,6 +61,9 @@ void bootup() {
   
   menuSensors.names = strSensors;
   menuSensors.Len = ArraySize( strSensors );
+
+  menuSensorsDHT.names = strSensorsDHT;
+  menuSensorsDHT.Len = ArraySize( strSensorsDHT );
   
   display.display();
 }

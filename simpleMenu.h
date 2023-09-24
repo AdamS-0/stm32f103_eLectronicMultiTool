@@ -58,7 +58,7 @@ void drawMenu( Menu &m, char _selector = '>', int _x = 0, int _y = 0, int _dY = 
     }
     
     DSP_print( m.names[i] );
-    _y += ( isCurId == 0 )*_dY +
-      ( m.TextSize + ( isCurId && (state & SHOW_BIG_SELECT) ? 1 : 0 ) ) * m.FontHeight;
+    _y += _dY +
+      ( m.TextSize + ( isCurId && (state & SHOW_BIG_SELECT) ) ) * m.FontHeight;
   }
 }
