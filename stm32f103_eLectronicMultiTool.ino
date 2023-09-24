@@ -19,20 +19,10 @@ extern uint8_t SmallFont[];
 // simple menus
 #include "simpleMenu.h"
 
-#define NUM_MENU_PAGES 9
-Menu mainMenu;
-String strMenuPages[] = {
-  "Tester", "PWM generator", "Servo tester",
-  "Piezo tester", "Sensors", "IR Rx / Tx",
-  "I2C Scanner", "Continuity", "ATTiny programmer"
-};
-
 
 #include <filter.h>
 #define LEN_FIL_R 5
 filter fiR( LEN_FIL_R );
-
-#include <DHT.h>
 
 
 // dependecies
@@ -42,23 +32,8 @@ filter fiR( LEN_FIL_R );
 #include "btns.h"     // Buttons
 #include "encoder.h"  // Encoder
 
-
-// +--------------------------+
-// | Sensors:                 |
-// |   DHT11;   (tmp & humid) |
-// |   HC-SR04; (distance)    |
-// |   MPU6050; (gyro)        |
-// |   VS1838B; (IR)          |
-// +--------------------------+
-#include "sensrs.h"
-
-//#include "multimeter.h"
-
-//#include "dst_gyro.h"
+// loops
 #include "components_tests.h"
-
-
-#include "loop_main_screen.h"
 #include "loop_continuity.h"
 #include "loop_IR.h"
 #include "loop_PWM_gen.h"
@@ -71,24 +46,14 @@ filter fiR( LEN_FIL_R );
 #include "bootup.h"   // bootup function
 
 
-void empty_loop() {
-  onEnterSubLoop();
 
-  display.setTextColor(1, 0);
-  display.setTextSize(1);
-  display.setCursor(55, 24);
-  display.print("Not");
-  display.setCursor(31, 32);
-  display.print("Implemented");
-  display.display();
-
-  while ( !exitCode ) {
-    exitCodeSub = false;
-    conDelay( 1000, exitCode || exitCodeSub );
-  }
-
-  onExitSubLoop();
-}
+#define NUM_MENU_PAGES 9
+String strMenuPages[] = {
+  "Tester", "PWM generator", "Servo tester",
+  "Piezo tester", "Sensors", "IR Rx / Tx",
+  "I2C Scanner", "Continuity", "ATTiny programmer"
+};
+Menu mainMenu( strMenuPages, NUM_MENU_PAGES );
 
 void (*menus[NUM_MENU_PAGES])() {
   loop_tester,        // 1 Tester
@@ -102,6 +67,7 @@ void (*menus[NUM_MENU_PAGES])() {
   empty_loop          // 9 ATTiny programmer
 };
 
+#include "loop_main_screen.h"
 
 
 // +----------------+
@@ -125,5 +91,5 @@ void setup() {
 void loop() {
   //  checkBattery();
   loop_mainScreen(); // temp, humidity and light info
-  menus[mainMenu.Id]();
+  menus[mainMenu.id]();
 }

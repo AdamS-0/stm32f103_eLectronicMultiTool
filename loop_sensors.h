@@ -2,6 +2,8 @@
 // | Sensor tester Section |
 // +-----------------------+
 
+#include <DHT.h>
+
 const String cstrFail = "FAIL";
 const String cstrCheck = "?   ";
 
@@ -13,7 +15,7 @@ const uint8_t dhtTypes[] = {DHT11, DHT21, DHT22};
 
 #define NUM_DHT_PAGES 3
 String strSensorsDHT[] = { "DHT11", "DHT21", "DHT22" };
-Menu menuSensorsDHT;
+Menu menuSensorsDHT( strSensorsDHT, NUM_DHT_PAGES );
 
 void loop_DHT() {
   onEnterSubLoop();
@@ -61,14 +63,14 @@ void loop_DHT() {
 
     if( enc1.wasTurned() || requireUpdate ) {
       requireUpdate = false;
-      updateMenu( menuSensorsDHT, enc1.getDelta() );
+      menuSensorsDHT.update( enc1.getDelta() );
       display.fillRect( 0, 23, 45, 41, BLACK );
         
-//drawMenu( Menu, _selector('>'), _x(0), _y(0), _dY(0), elemens2Show(5),
+//Menu.draw( _selector('>'), _x(0), _y(0), _dY(0), elemens2Show(5),
 //          state(SHOW_NUM_LINE | SHOW_NUM_LINE_SELECT)[
 //            HIDE_SELECTOR, SHOW_BIG_SELECT, SHOW_NUM_LINE, SHOW_NUM_LINE_SELECT
-//        ] )
-      drawMenu( menuSensorsDHT, '>', 6, 23, 2, 5, 0 );
+//          ] )
+      menuSensorsDHT.draw( '>', 6, 23, 2, 5, 0 );
       display.display();
     }
     
@@ -115,7 +117,7 @@ void loop_DHT() {
 
 #define NUM_SENSOR_PAGES 3
 String strSensors[] = { "DHT11/21/22", "HC-04", "LM35" };
-Menu menuSensors;
+Menu menuSensors( strSensors, NUM_SENSOR_PAGES );
 
 void (*pagesSensors[NUM_SENSOR_PAGES])() {
   loop_DHT,    // DHT11/21/22
@@ -139,19 +141,19 @@ void loop_sensors() {
           
     if( enc1.wasTurned() || requireUpdate ) {
       requireUpdate = false;
-      updateMenu( menuSensors, enc1.getDelta() );
+      menuSensors.update( enc1.getDelta() );
       display.fillRect( 0, 8, 128, 56, BLACK );
       
-//drawMenu( Menu, _selector('>'), _x(0), _y(0), _dY(0), elemens2Show(5),
+//Menu.draw( _selector('>'), _x(0), _y(0), _dY(0), elemens2Show(5),
 //          state(SHOW_NUM_LINE | SHOW_NUM_LINE_SELECT)[
 //            HIDE_SELECTOR, SHOW_BIG_SELECT, SHOW_NUM_LINE, SHOW_NUM_LINE_SELECT
 //          ] )
-      drawMenu( menuSensors, '>', 0, 10, 2, 5, SHOW_NUM_LINE | SHOW_NUM_LINE_SELECT );
+      menuSensors.draw( '>', 0, 10, 2, 5, SHOW_NUM_LINE | SHOW_NUM_LINE_SELECT );
       display.display();
     }
     
     if( btnEnc.wasPressed() ) {
-      pagesSensors[ menuSensors.Id ]();
+      pagesSensors[ menuSensors.id ]();
       requireUpdate = true;
     }
     

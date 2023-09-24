@@ -27,11 +27,7 @@ void checkBattery() {
 
 void onEnterSubLoop() {
   display.clearDisplay();
-  display.setTextColor( WHITE, BLACK );
-//  display.setTextSize( 1 );
-//  display.setCursor( 0, 0 );
-//  
-//  display.print( (String)( ++pageCtr ) + "/" + (String)( pageNum ) );  
+  display.setTextColor( WHITE, BLACK );  
   
   display.drawBitmap(119, 0, BMP_BAT_ICON, 8, 5, WHITE);
   uint8_t pBat = ( 5 * (100 - batLvl) )/100;
@@ -42,10 +38,22 @@ void onEnterSubLoop() {
 unsigned long _Tms = 0;
 #define conDelay( Tm, stopCondition ) { _Tms = millis(); while( millis() - _Tms < Tm && !(stopCondition) ) delayMicroseconds( 900 ); }
 
-void mdelay( unsigned long Tms, bool btnAinclude = true ) {
-  unsigned long T = millis();
-  while( millis() - T < Tms && !( (btnAinclude && exitCode) || exitCodeSub ) ) delayMicroseconds( 900 );
+
+void empty_loop() {
+  onEnterSubLoop();
+
+  display.setTextColor(1, 0); display.setTextSize(1);
+  display.setCursor(55, 24);  display.print("Not");
+  display.setCursor(31, 32);  display.print("Implemented");
+  display.display();
+
+  while ( !exitCode ) {
+    exitCodeSub = false;
+    conDelay( 1000, exitCode || exitCodeSub );
+  }
+  onExitSubLoop();
 }
+
 
 
 template<typename T>

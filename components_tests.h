@@ -2,7 +2,10 @@ float getCap( uint8_t iA, uint8_t iB );
 float getRes( uint8_t iA, uint8_t iB );
 float getVolt( uint8_t iA, uint8_t iB );
 
-
+void mdelay( unsigned long Tms, bool btnAinclude = true ) {
+  unsigned long T = millis();
+  while( millis() - T < Tms && !( (btnAinclude && exitCode) || exitCodeSub ) ) delayMicroseconds( 900 );
+}
 
 
 // tester seciotn

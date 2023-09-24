@@ -41,7 +41,7 @@ void loop_continuity() {
     if( P23 ) display.fillRect(31, 47, 28, 2, WHITE);
     
     display.display();
-    mdelay( 200 );
+    conDelay( 200, exitCode );
   }
   
   clearPins();

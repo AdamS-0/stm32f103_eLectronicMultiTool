@@ -57,7 +57,7 @@ void loop_I2C_scanner() {
     display.setCursor( 0, 51 ); display.print( (String)nDevices );
     
     display.display();
-    mdelay( 200 );
+    conDelay( 200, exitCode );
   }
   WIRE3.end();
   

@@ -105,7 +105,7 @@ void loop_IR_Rx() {
     }
     
     display.display();
-    mdelay( 200 );
+    conDelay( 200, exitCode );
   }
   
 }
@@ -206,7 +206,7 @@ void loop_IR() {
     exitCodeSub = false;
     loop_IR_Tx();
     
-    mdelay( 200 );
+    conDelay( 200, exitCode );
   }
   onExitSubLoop();
 }

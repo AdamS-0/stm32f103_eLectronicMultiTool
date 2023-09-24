@@ -36,7 +36,7 @@ void loop_PWM_gen() {
   analogWrite( PIN_PWM_OUT, currValue );
   pinMode( PIN_PWM_OUT, INPUT );
   
-  mdelay( 200 );
+  conDelay( 200, exitCode );
   onExitSubLoop();
 }
 
