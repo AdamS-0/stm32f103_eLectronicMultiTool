@@ -59,5 +59,8 @@ void bootup() {
   mainMenu.names = strMenuPages;
   mainMenu.Len = ArraySize( strMenuPages );
   
+  menuSensors.names = strSensors;
+  menuSensors.Len = ArraySize( strSensors );
+  
   display.display();
 }

@@ -105,25 +105,20 @@ void loop_DHT() {
 ///////////////////////
 
 #define NUM_SENSOR_PAGES 3
-String strSensors[] = {
-  "DHT11/21/22", "HC-04", "LM35" };
+String strSensors[] = { "DHT11/21/22", "HC-04", "LM35" };
+Menu menuSensors;
 
-void (*menuSensors[NUM_SENSOR_PAGES])() {
+void (*pagesSensors[NUM_SENSOR_PAGES])() {
   loop_DHT,    // DHT11/21/22
   empty_loop,    // HC-04
   empty_loop    // LM35
 };
 
-int8_t selSensor = 0;
-
 
 void loop_sensors() {
   onEnterSubLoop();
   
-  int8_t minId = 0, maxId = NUM_SENSOR_PAGES, countOnScr = 6;
-  uint8_t my = 0;
   bool requireUpdate = true;
-  selSensor = 0;
   
   enc1.getDelta(); // erase turns from previous screens
   display.setTextSize(1);
@@ -132,36 +127,22 @@ void loop_sensors() {
   display.display();
   
   while( !exitCode ) {
-    if( enc1.wasTurned() ) {
-      requireUpdate = true;
-      selSensor = selSensor + enc1.getDelta();
-      if( selSensor < 0 ) selSensor = 0;
-      else if( selSensor >= NUM_SENSOR_PAGES ) selSensor = NUM_SENSOR_PAGES - 1;
-
-      minId = max(selSensor - 2, 0);
-      maxId = min( minId + countOnScr, NUM_SENSOR_PAGES );
-      minId = min( (int)minId, maxId - countOnScr );
-      minId = minId < 0 ? 0 : minId;
-    }
-
-    if( requireUpdate ) {
+          
+    if( enc1.wasTurned() || requireUpdate ) {
       requireUpdate = false;
+      updateMenu( menuSensors, enc1.getDelta() );
       display.fillRect( 0, 8, 128, 56, BLACK );
-      display.setTextSize(1);
-      my = 10;
-      for( uint8_t i = minId; i < maxId; i++ ) {
-        String str = strSensors[i];
-        display.setCursor( 8, my );
-        display.print( String(i + 1) + " " + str );
-        my += 9;
-      }
-  
-      display.setCursor(0, 10 + 9*(selSensor - minId) ); display.print(">");
+      
+//drawMenu( Menu, _selector('>'), _x(0), _y(0), _dY(0), elemens2Show(5),
+//          state(SHOW_NUM_LINE | SHOW_NUM_LINE_SELECT)[
+//            HIDE_SELECTOR, SHOW_BIG_SELECT, SHOW_NUM_LINE, SHOW_NUM_LINE_SELECT
+//          ] )
+      drawMenu( menuSensors, '>', 0, 10, 2, 5, SHOW_NUM_LINE | SHOW_NUM_LINE_SELECT );
       display.display();
     }
     
     if( btnEnc.wasPressed() ) {
-      menuSensors[selSensor]();
+      pagesSensors[ menuSensors.Id ]();
       requireUpdate = true;
     }
     
