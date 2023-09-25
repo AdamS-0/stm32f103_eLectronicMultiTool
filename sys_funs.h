@@ -55,6 +55,12 @@ void empty_loop() {
 }
 
 
+String fillPlacesLeft( String strIn, char charFill, uint8_t places ) {
+  String strOut = strIn;
+  while( strOut.length() < places ) strOut = charFill + strOut;
+  return strOut;
+}
+
 
 template<typename T>
 String val2str(T val, int baseSys = 2, uint8_t places = 0, char zeroChar = '0') {

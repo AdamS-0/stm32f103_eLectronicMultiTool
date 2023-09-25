@@ -291,35 +291,6 @@ void test_TR() {
 
 
 
-void test_IND() {
-  if( exitCode ) return;
-  onEnterSub_tester();
-  display.drawBitmap(92, 1, BMP_IND_ICON, 16, 5, WHITE);
-  display.drawBitmap(42, 45, BMP_IND, 44, 10, WHITE);
-  display.display();
-
-  while( !exitCodeSub & !exitCode ) {
-    //exitCodeSub = true;
-
-
-    display.display();
-    mdelay( 1000 );
-  }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -617,9 +588,6 @@ void loop_tester() {
 
     exitCodeSub = false;
     test_TR();
-    
-//    exitCodeSub = false;
-//    test_IND();
     
     mdelay( 200 );
 
