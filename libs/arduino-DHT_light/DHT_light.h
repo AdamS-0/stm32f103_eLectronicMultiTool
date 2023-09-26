@@ -87,7 +87,7 @@ protected:
 private:
   DHT_MODEL_t model;
   DHT_ERROR_t error;
-  unsigned long lastReadTime;
+  unsigned long lastReadTime = 0;
 };
 
 
@@ -95,6 +95,7 @@ private:
 void DHT_light::setup(uint32_t _pin, DHT_MODEL_t _model) {
   this->pin = _pin;
   this->model = _model;
+  error = ERROR_NONE;
   this->resetTimer(); // Make sure we do read the sensor in the next readSensor()
   if( model == AUTO_DETECT) {
     this->model = DHT22;
@@ -108,7 +109,7 @@ void DHT_light::setup(uint32_t _pin, DHT_MODEL_t _model) {
 }
 
 void DHT_light::resetTimer() {
-  this->lastReadTime = millis() - 3000;
+  this->lastReadTime = millis();
 }
 
 float DHT_light::getHumidity() {
@@ -149,13 +150,14 @@ void DHT_light::readSensor() {
   humidity = NAN;
 
   // Request sample
-  digitalWrite(pin, LOW); // Send start signal
+  pinMode(pin, INPUT_PULLUP);	delay(1);
   pinMode(pin, OUTPUT);
-  if( model == DHT11 ) delay(18);
-  else                 delayMicroseconds(800); // This will fail for a DHT11 - that's how we can detect such a device
+  digitalWrite(pin, LOW); // Send start signal
+  if( model == DHT11 ) delay(20);
+  else                 delayMicroseconds(1100); // This will fail for a DHT11 - that's how we can detect such a device
 
-  pinMode(pin, INPUT);
-  digitalWrite(pin, HIGH); // Switch bus to receive data
+  pinMode(pin, INPUT_PULLUP);
+  //digitalWrite(pin, HIGH); // Switch bus to receive data
 
   // We're going to read 83 edges:
   // - First a FALLING, RISING, and FALLING edge for the start bit
@@ -165,7 +167,7 @@ void DHT_light::readSensor() {
   uint16_t rawHumidity = 0;
   uint16_t rawTemperature = 0;
   uint16_t data = 0;
-
+  
   for( int8_t i = -3 ; i < 2 * 40; i++ ) {
     byte age;
     startTime = micros();

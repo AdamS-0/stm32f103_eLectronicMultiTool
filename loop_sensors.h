@@ -44,6 +44,9 @@ void loop_DHT() {
   digitalWrite( PIN_3, LOW );   digitalWrite( PIN_PWM_OUT, LOW );
   
   do {
+    display.fillRect( 80, 12, 48, 8, BLACK );
+    display.setTextSize(1);
+    display.setCursor(80, 12); display.print( "..." );
     
     if( enc1.wasTurned() || requireUpdate ) {
       requireUpdate = false;
@@ -66,7 +69,7 @@ void loop_DHT() {
     display.display();
     
     dht.setup( PIN_2, dhtTypes[menuSensorsDHT.id] );
-
+    
     display.setTextSize(1);
     display.setCursor(80, 12); display.print( dht.getStatusString() );
     display.display();
@@ -84,16 +87,25 @@ void loop_DHT() {
     
     conDelay( ulDHTWaitFor, requireUpdate || exitCode || enc1.wasTurned() || ( millis() > ulDHTWaitTo ) );
     
-    if( millis() > ulDHTWaitTo && !requireUpdate ){
+    if( millis() >= ulDHTWaitTo ){
+      
       do {
+        display.fillRect( 80, 12, 48, 8, BLACK );
+        display.setTextSize(1);
+        display.setCursor(80, 12); display.print( "..." );
+        display.display();
+        
         conDelay( 1000, exitCode || enc1.wasTurned() );
         humid = dht.getHumidity();     // [%]
         temp = dht.getTemperature();   // [Celsius]
         
+        display.setCursor(80, 12); display.print( dht.getStatusString() );
+        display.setTextSize(2);
         display.setCursor( 62, 25 );
         if( isnan(temp) ) display.print( cstrFail );
         else {
           temp = 0.2*temp + 0.8*tempOld;
+          tempOld = temp;
           display.print( String(temp, 1) );
         }
   
@@ -101,11 +113,12 @@ void loop_DHT() {
         if( isnan(temp) ) display.print( cstrFail );
         else {
           humid = 0.2*humid + 0.8*humidOld;
+          humidOld = humid;
           display.print( String(humid, 1) );
         }
         
         display.display();
-      } while( !( exitCode || enc1.wasTurned() ) ) ;
+      } while( !( exitCode || enc1.wasTurned() || requireUpdate ) ) ;
     }
   } while( !exitCode ) ;
   
@@ -182,7 +195,7 @@ void loop_HC_SR04() {
 
     display.fillRect( 42, 51, 86, 10, BLACK ); // clear status msg
     display.setTextSize(1);
-    display.setCursor(4, 39);   display.print( fillPlacesLeft( (String)dT, ' ', 7 ) );
+    display.setCursor(34, 39);   display.print( fillPlacesLeft( (String)dT, ' ', 7 ) );
     display.setCursor(42, 51);  display.print( HC_SR_Status[ uiErrorHC_SR ] );
     
     display.setTextSize(2);
