@@ -26,6 +26,7 @@ void checkBattery() {
 }
 
 void onEnterSubLoop() {
+  exitCode = false;
   display.clearDisplay();
   display.setTextColor( WHITE, BLACK );  
   
