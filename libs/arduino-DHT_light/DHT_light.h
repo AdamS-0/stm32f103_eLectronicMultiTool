@@ -47,7 +47,8 @@ public:
   typedef enum {
     ERROR_NONE = 0,
     ERROR_TIMEOUT,
-    ERROR_CHECKSUM
+    ERROR_CHECKSUM,
+	ERROR_TOO_FAST
   }
   DHT_ERROR_t;
   
@@ -96,16 +97,20 @@ void DHT_light::setup(uint32_t _pin, DHT_MODEL_t _model) {
   this->pin = _pin;
   this->model = _model;
   error = ERROR_NONE;
-  this->resetTimer(); // Make sure we do read the sensor in the next readSensor()
+  //this->resetTimer(); // Make sure we do read the sensor in the next readSensor()
   if( model == AUTO_DETECT) {
     this->model = DHT22;
     readSensor();
-    if ( error == ERROR_TIMEOUT ) {
+	if( error == ERROR_TOO_FAST ) delay( 2001 - ( millis() - lastReadTime ) );
+	readSensor();
+	
+    if( error == ERROR_TIMEOUT ) {
       this->model = DHT11;
       // Warning: in case we auto detect a DHT11, you should wait at least 1000 msec
       // before your first read request. Otherwise you will get a time out error.
     }
   }
+  error = ERROR_NONE;
 }
 
 void DHT_light::resetTimer() {
@@ -113,12 +118,16 @@ void DHT_light::resetTimer() {
 }
 
 float DHT_light::getHumidity() {
-  readSensor();
+  
+  if( (unsigned long)(millis() - lastReadTime) > (model == DHT11 ? 1000L : 2000L) )
+    readSensor();
+  
   return humidity;
 }
 
 float DHT_light::getTemperature() {
-  readSensor();
+  if( (unsigned long)(millis() - lastReadTime) >= (model == DHT11 ? 1000L : 2000L) )
+    readSensor();
   return temperature;
 }
 
@@ -129,6 +138,9 @@ const char* DHT_light::getStatusString() {
 
     case DHT_light::ERROR_CHECKSUM:
       return "CHECKSUM";
+	  
+	case DHT_light::ERROR_TOO_FAST:
+      return "TOO FAST";
 
     default:
       return "OK";
@@ -141,14 +153,17 @@ void DHT_light::readSensor() {
   // - Max sample rate DHT11 is 1 Hz   (duty cicle 1000 ms)
   // - Max sample rate DHT22 is 0.5 Hz (duty cicle 2000 ms)
   unsigned long startTime = millis();
-  if( (unsigned long)(startTime - lastReadTime) < (model == DHT11 ? 999L : 1999L) )
-    return;
+  if( (unsigned long)(startTime - lastReadTime) < (model == DHT11 ? 1000L : 2000L) ) {
+    error = ERROR_TOO_FAST;
+	return;
+  }
   
+  delay(100);
   lastReadTime = startTime;
-
+  error = ERROR_NONE;
   temperature = NAN;
   humidity = NAN;
-
+  
   // Request sample
   pinMode(pin, INPUT_PULLUP);	delay(1);
   pinMode(pin, OUTPUT);
@@ -156,8 +171,7 @@ void DHT_light::readSensor() {
   if( model == DHT11 ) delay(20);
   else                 delayMicroseconds(1100); // This will fail for a DHT11 - that's how we can detect such a device
 
-  pinMode(pin, INPUT_PULLUP);
-  //digitalWrite(pin, HIGH); // Switch bus to receive data
+  pinMode(pin, INPUT_PULLUP); // Switch bus to receive data
 
   // We're going to read 83 edges:
   // - First a FALLING, RISING, and FALLING edge for the start bit

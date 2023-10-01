@@ -83,22 +83,27 @@ void loop_DHT() {
     ulLastDHT = millis();
     ulDHTWaitTo = ulLastDHT + ulDHTWaitFor;
     
-    humid = 0; temp = 0; humidOld = 0; tempOld = 0;
+    humid = 0; temp = 0; humidOld = NAN; tempOld = NAN;
     
     conDelay( ulDHTWaitFor, requireUpdate || exitCode || enc1.wasTurned() || ( millis() > ulDHTWaitTo ) );
     
     if( millis() >= ulDHTWaitTo ){
+      humidOld = dht.getHumidity();
+      tempOld = dht.getTemperature();
       
       do {
+        conDelay( (8*ulDHTWaitFor)/10, exitCode || enc1.wasTurned() );
         display.fillRect( 80, 12, 48, 8, BLACK );
         display.setTextSize(1);
         display.setCursor(80, 12); display.print( "..." );
         display.display();
+        conDelay( (2*ulDHTWaitFor)/10, exitCode || enc1.wasTurned() );
         
-        conDelay( 1000, exitCode || enc1.wasTurned() );
         humid = dht.getHumidity();     // [%]
         temp = dht.getTemperature();   // [Celsius]
-        
+
+        display.fillRect( 80, 12, 48, 8, BLACK );
+        display.setTextSize(1);
         display.setCursor(80, 12); display.print( dht.getStatusString() );
         display.setTextSize(2);
         display.setCursor( 62, 25 );
@@ -106,7 +111,7 @@ void loop_DHT() {
         else {
           temp = 0.2*temp + 0.8*tempOld;
           tempOld = temp;
-          display.print( String(temp, 1) );
+          display.print( fillPlacesLeft( String(temp, 1), ' ', 4 ) );
         }
   
         display.setCursor( 62, 44 );
@@ -114,7 +119,7 @@ void loop_DHT() {
         else {
           humid = 0.2*humid + 0.8*humidOld;
           humidOld = humid;
-          display.print( String(humid, 1) );
+          display.print( fillPlacesLeft( String(humid, 1), ' ', 4 ) );
         }
         
         display.display();

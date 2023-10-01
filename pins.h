@@ -11,17 +11,17 @@
 
 left side:
  PB12 .- ENC_A   // HC-SR04 TRIG
- PB13 .-    // HC-SR04 ECHO
- PB14 .- ENC_B
- PB15 .- ENC_BTN
- PA8  .~    // DHT11
+ PB13 .- ENC_B   // HC-SR04 ECHO
+ PB14 .- ENC_BTN
+ PB15 .- BTN A
+ PA8  .~ BTN B   // DHT11
  PA9  .~ TX
  PA10 .~ RX
  PA11 .- 
  PA12 .- 
  PA15 .- IR RECV
- PB3  .- BTN A
- PB4  .- BTN B
+ PB3  .- // BTN A
+ PB4  .- // BTN B
  PB5  o- 
  PB6  .~ X
  PB7  .~ X
@@ -55,15 +55,11 @@ include:
 */
 
 #define PIN_ENC_A   PB12
-#define PIN_ENC_B   PB14
-#define PIN_ENC_BTN PB15
+#define PIN_ENC_B   PB13
+#define PIN_ENC_BTN PB14
 
-
-#define PIN_BTN_A PB3
-#define PIN_BTN_B PB4
-//#define PIN_BTN_C PB5
-
-#define PIN_DHT11 PA8
+#define PIN_BTN_A PB15
+#define PIN_BTN_B PA8
 
 #define PIN_1 PA1
 #define PIN_2 PA4
@@ -75,13 +71,6 @@ include:
 #define PIN_2_R2 PA5 // 2 MOhm
 #define PIN_3_R1 PA6 // 470 Ohm
 #define PIN_3_R2 PB0 // 2 MOhm
-
-
-
-#define PIN_LIGHT_SENS PB1
-
-#define PIN_DST_TRIG PB12 // PB4
-#define PIN_DST_ECHO PB13 // PB5
 
 #define PIN_PWM_OUT PB8
 
