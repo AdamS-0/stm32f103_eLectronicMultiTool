@@ -7,8 +7,8 @@ DHT_light dht;
 const String cstrFail = "FAIL";
 const String cstrCheck = "?   ";
 
-//  T1    T2    T3    PWM_OUT
-//  1     2     3     4
+//  VCC   T1    T2    T3    
+//  VCC   1     2     3     
 //  VCC   DATA  NC    GND
 
 
@@ -39,9 +39,9 @@ void loop_DHT() {
   display.display();
   
   pinMode( PIN_1, OUTPUT ); pinMode( PIN_2, OUTPUT );
-  pinMode( PIN_3, OUTPUT ); pinMode( PIN_PWM_OUT, OUTPUT );
-  digitalWrite( PIN_1, HIGH );  digitalWrite( PIN_2, HIGH );
-  digitalWrite( PIN_3, LOW );   digitalWrite( PIN_PWM_OUT, LOW );
+  pinMode( PIN_3, OUTPUT );
+  digitalWrite( PIN_1, HIGH );  digitalWrite( PIN_2, LOW );
+  digitalWrite( PIN_3, LOW );
   
   do {
     display.fillRect( 80, 12, 48, 8, BLACK );
@@ -68,7 +68,7 @@ void loop_DHT() {
     display.setCursor( 62, 44 );  display.print( cstrCheck );
     display.display();
     
-    dht.setup( PIN_2, dhtTypes[menuSensorsDHT.id] );
+    dht.setup( PIN_1, dhtTypes[menuSensorsDHT.id] );
     
     display.setTextSize(1);
     display.setCursor(80, 12); display.print( dht.getStatusString() );
@@ -143,12 +143,12 @@ void loop_DHT() {
 // +----------------------+
 // | DST - HC-SR04 sensor |
 // +----------------------+
-//  T1    T2    T3    PWM_OUT
-//  1     2     3     4
+//  VCC   T1    T2    T3    
+//  VCC   1     2     3     
 //  VCC   Trig  Echo  GND
 
-#define PIN_HCSR_TRIG PIN_2
-#define PIN_HCSR_ECHO PIN_3
+#define PIN_HCSR_TRIG PIN_1
+#define PIN_HCSR_ECHO PIN_2
 
 String HC_SR_Status[] = { "Ok", "Not connected", "Error" };
 
@@ -184,10 +184,10 @@ void loop_HC_SR04() {
   
   display.display();
   
-  pinMode( PIN_1, OUTPUT ); pinMode( PIN_2, OUTPUT );
-  pinMode( PIN_3, INPUT ); pinMode( PIN_PWM_OUT, OUTPUT );
-  digitalWrite( PIN_1, HIGH );  digitalWrite( PIN_2, LOW );
-  digitalWrite( PIN_PWM_OUT, LOW );
+  pinMode( PIN_1, OUTPUT ); pinMode( PIN_2, INPUT );
+  pinMode( PIN_3, OUTPUT );
+  digitalWrite( PIN_1, LOW );
+  digitalWrite( PIN_3, LOW );
   
   do {
     dT = HC_SR04_getEcho( PIN_HCSR_TRIG, PIN_HCSR_ECHO, maxTimeout_HC_SR04 );

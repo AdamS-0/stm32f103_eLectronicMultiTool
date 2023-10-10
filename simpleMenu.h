@@ -4,6 +4,7 @@
 #define DSP_setTextSize display.setTextSize
 #define DSP_print       display.print
 
+#define SHOW_ONLY_SELECTOR    0
 #define HIDE_SELECTOR         1
 #define SHOW_BIG_SELECT       2
 #define SHOW_NUM_LINE         4

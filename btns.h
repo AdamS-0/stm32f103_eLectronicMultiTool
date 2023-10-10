@@ -25,9 +25,9 @@ class Button {
     }
 
     // clears the state of the button
-    bool wasPressed() {
+    bool wasPressed(bool clearState = true) {
       bool oldState = this->bPressed;
-      this->bPressed = false;
+      if( clearState )  this->bPressed = false;
       return oldState;
     }
 

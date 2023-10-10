@@ -14,6 +14,8 @@ void loop_PWM_gen() {
   display.setCursor( 75, 32 ); display.print( "---" );
   display.display();
   
+  clearPins();
+  
   pinMode( PIN_PWM_OUT, OUTPUT );
   analogWrite( PIN_PWM_OUT, currValue );
   

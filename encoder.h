@@ -31,13 +31,15 @@ void encoderChangeClear() {
 }
 
 template<typename T>
-void encoderBlinkValue( uint8_t x, uint8_t y, T &v, int textSize = 1, int baseSystem = 10, uint8_t places = 0 ) {
+void encoderBlinkValue( uint8_t x, uint8_t y, T &v, int textSize = 1, int baseSystem = 10, uint8_t places = 0, bool isModified = true ) {
   String strVal = val2str(v, baseSystem, places, '0');
   places = strVal.length();
   display.setCursor(x, y);
   display.setTextSize(textSize);
   display.print(strVal);
 
+  if( !isModified ) return;
+   
   uint8_t yi = y + textSize*8 - 1;
   uint8_t xi = x + (places - u8_encChangePos - 1)*textSize*6;
   display.drawFastHLine(xi, yi, textSize*6, (millis() % 1000 > 500) && !b_encChangePlace ? BLACK : WHITE);
@@ -92,8 +94,6 @@ void encoderChangeValue(T &v, int baseSystem = 10, T maxValue = 0) {
   else if( abs(dV) < oldDigit ) newDigit = oldDigit + dV;
   else newDigit = 0;
   // newDigit in range <0, maxDigit)
-  
-  Serial.println( "oD:" + (String)oldDigit + ", nD:" + (String)newDigit + ", mxD:" + (String)maxDigit );
   
   T newV = v;
   newV -= oldDigit * basePosPow;

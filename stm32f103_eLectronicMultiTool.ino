@@ -41,6 +41,7 @@ filter fiR( LEN_FIL_R );
 #include "loop_piezo.h"
 #include "loop_sensors.h"
 #include "loop_I2C_scanner.h"
+#include "loop_RGB_LED.h"
 
 #include "loop_pinout.h"
 
@@ -49,26 +50,27 @@ filter fiR( LEN_FIL_R );
 
 
 
-#define NUM_MENU_PAGES 10
+#define NUM_MENU_PAGES 11
 String strMenuPages[] = {
   "Tester", "PWM generator", "Servo tester",
-  "Piezo tester", "Sensors", "IR Rx / Tx",
+  "Piezo tester", "Sensors", "RGB LED Tester", "IR Rx / Tx",
   "I2C Scanner", "Continuity", "ATTiny programmer",
   "Pinout"
 };
 Menu mainMenu( strMenuPages, NUM_MENU_PAGES );
 
 void (*menus[NUM_MENU_PAGES])() {
-  loop_tester,        // 1 Tester
-  loop_PWM_gen,       // 2 PWM generator
-  loop_servo,         // 3 Servo tester
-  loop_piezo,         // 4 Piezo tester
-  loop_sensors,       // 5 Sensors
-  loop_IR,            // 6 IR Rx / Tx
-  loop_I2C_scanner,   // 7 I2C scanner
-  loop_continuity,    // 8 Continuity
-  empty_loop,         // 9 ATTiny programmer
-  loop_pinout
+  loop_tester,        //  1 Tester
+  loop_PWM_gen,       //  2 PWM generator
+  loop_servo,         //  3 Servo tester
+  loop_piezo,         //  4 Piezo tester
+  loop_sensors,       //  5 Sensors
+  loop_RGB_LED,       //  6 RGB LED tester
+  loop_IR,            //  7 IR Rx / Tx
+  loop_I2C_scanner,   //  8 I2C scanner
+  loop_continuity,    //  9 Continuity
+  empty_loop,         // 10 ATTiny programmer
+  loop_pinout         // 11 pinout
 };
 
 #include "loop_main_screen.h"
